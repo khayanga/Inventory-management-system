@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 import { hash } from "bcrypt";
 import * as z from "zod";
 
-
 // Define schema for form validation using zod
 const userSchema = z.object({
     email: z.string().email(),
@@ -14,7 +13,7 @@ const userSchema = z.object({
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { email, username, password } =userSchema.parse(body);
+        const { email, username, password } = userSchema.parse(body);
 
         if (!email || !username || !password) {
             return NextResponse.json(
@@ -30,7 +29,7 @@ export async function POST(req: Request) {
 
         if (existingUserByEmail) {
             return NextResponse.json(
-                { user: null, message: "User with this email already exists" },
+                { field: "email", message: "User with this email already exists" },
                 { status: 409 }
             );
         }
@@ -42,7 +41,7 @@ export async function POST(req: Request) {
 
         if (existingUserByName) {
             return NextResponse.json(
-                { user: null, message: "User with this name already exists" },
+                { field: "username", message: "User with this name already exists" },
                 { status: 409 }
             );
         }
@@ -54,20 +53,23 @@ export async function POST(req: Request) {
             data: {
                 email,
                 username,
-                password : hashedPassword,
+                password: hashedPassword,
                 createdAt: new Date(),
                 updateAt: new Date(),
             },
         });
 
-        const{password:newUserPassword, ...rest} = newUser;
+        const { password: newUserPassword, ...rest } = newUser;
 
         // Return success response with user details and timestamps
-        return NextResponse.json({user:rest , message: "User created successfully"}, {status: 201});
+        return NextResponse.json(
+            { user: rest, message: "User created successfully" },
+            { status: 201 }
+        );
     } catch (error) {
         console.error("Error occurred in POST handler:", error);
         return NextResponse.json(
-            { success: false || "Something went wrong" },
+            { success: false, message: "Something went wrong" },
             { status: 500 }
         );
     }
