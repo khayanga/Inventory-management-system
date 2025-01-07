@@ -8,14 +8,15 @@ const userSchema = z.object({
     email: z.string().email(),
     username: z.string().min(3),
     password: z.string().min(6),
+    role: z.enum(["Admin", "Client"]).optional(),
 });
 
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { email, username, password } = userSchema.parse(body);
+        const { email, username, password,role } = userSchema.parse(body);
 
-        if (!email || !username || !password) {
+        if (!email || !username || !password || !role) {
             return NextResponse.json(
                 { success: false, message: "All fields are required" },
                 { status: 400 }
@@ -54,6 +55,7 @@ export async function POST(req: Request) {
                 email,
                 username,
                 password: hashedPassword,
+                role,
                 createdAt: new Date(),
                 updateAt: new Date(),
             },
@@ -67,10 +69,12 @@ export async function POST(req: Request) {
             { status: 201 }
         );
     } catch (error) {
-        console.error("Error occurred in POST handler:", error);
+        console.error('User could not be registred:',error);
+    
         return NextResponse.json(
             { success: false, message: "Something went wrong" },
             { status: 500 }
         );
     }
 }
+

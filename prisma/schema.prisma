@@ -7,14 +7,21 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+enum role {
+  Admin
+  Client
+}
+
 
 model User {
   id        Int      @id @default(autoincrement())
-  username  String   @unique
   email     String   @unique
+  username  String   @unique
   password  String
+  role      String   @default("Client")
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
+
 }
 
 

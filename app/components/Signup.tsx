@@ -5,13 +5,17 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useForm, FieldError } from "react-hook-form";
+import { useRouter } from "next/navigation";
+
 
 const Signup = () => {
+  const router = useRouter();
   // Specify the form data type
   interface FormData {
     email: string;
     username: string;
     password: string;
+    role:string;
   }
 
   // Validate the form data
@@ -19,6 +23,9 @@ const Signup = () => {
     email: z.string().email(),
     username: z.string().min(3),
     password: z.string().min(6),
+    role: z.string().optional().refine((role) => role === undefined || ["Admin", "Client"].includes(role), {
+      message: "Invalid role",
+    }),
   });
 
   const { register, handleSubmit, reset, setError, formState: { errors } } = useForm<FormData>({
@@ -29,6 +36,7 @@ const Signup = () => {
     try {
       const response = await axios.post("/api/user", data);
       console.log(response.data, "User created successfully");
+      router.push("/signin"); // Redirect to the sign-in page
       // Clear the form
       reset();
     } catch (error: any) {
@@ -38,9 +46,7 @@ const Signup = () => {
           type: "server",
           message: error.response.data.message,
         });
-      } else {
-        console.error(error);
-      }
+      } 
     }
   };
 
@@ -69,6 +75,16 @@ const Signup = () => {
         placeholder="Password"
         type="password"
       />
+      <select
+        className="text-black"
+        {...register("role")} 
+        // Register the role field
+        defaultValue= "Client"    
+         >
+        
+        <option value="Admin">Admin</option>
+        <option value="Client">Client</option>
+      </select>
       <button className="bg-blue-800 text-white p-2 rounded-full" type="submit">
         Submit
       </button>
