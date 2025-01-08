@@ -4,7 +4,7 @@ import { signOut } from "next-auth/react";
 
 const page = () => {
     const handleSignOut = () => {
-        signOut({ callbackUrl: "/signin" }); // Redirect to the sign-in page after signing out
+        signOut({ callbackUrl: "/signin" }); 
       };
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
