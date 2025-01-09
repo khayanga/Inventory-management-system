@@ -1,5 +1,6 @@
 "use client";
 
+import { ModeToggle } from "@/components/ModeToggle";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
@@ -24,6 +25,7 @@ const Page = () => {
       <Link href="/signout">
         <button className="text-center bg-violet-300 text-white">Sign out</button>
       </Link>
+      <ModeToggle />
     </div>
   );
 };
