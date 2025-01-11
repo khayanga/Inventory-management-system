@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,13 +17,21 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+import {
   Card,
-  CardContent,
+ 
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import Link from "next/link";
 
 
 
@@ -74,9 +81,9 @@ const Signup = () => {
     }
   };
   return (
-    <Card className="p-4 max-w-sm mx-auto">
+    <Card  className="p-4 ">
       <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome back</CardTitle>
+          <CardTitle className="text-xl">Get started.</CardTitle>
           <CardDescription>
             Sign up to create your account.
           </CardDescription>
@@ -132,16 +139,30 @@ const Signup = () => {
               <FormItem>
                 <FormLabel>Role</FormLabel>
                 <FormControl>
-                  <select className="text-black" {...field}>
-                    <option value="Admin">Admin</option>
-                    <option value="Client">Client</option>
-                  </select>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}{...field}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a role " />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Admin">Admin</SelectItem>
+                      <SelectItem value="Client">Client</SelectItem>
+                    </SelectContent>
+                  </Select>
+                 
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button className="w-full my-4" type="submit">Submit</Button>
+
+          <div className="mt-2 text-center text-sm">
+              {/* Don&apos;t have an account?{" "} */}
+              Alreday have an account ? 
+              <Link href="/signin" className="underline underline-offset-4 text-blue-500">
+                Sign In
+              </Link>
+            </div>
         </form>
       </Form>
 
