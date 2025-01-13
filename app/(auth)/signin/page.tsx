@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { useLoadingState } from "@/components/LoadingContext";
 import {
   Card,
   CardDescription,
@@ -28,18 +29,21 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription
+  DialogDescription,
 } from "@/components/ui/dialog";
+import Spinner from "@/components/Spinner";
 
 const Page = () => {
-  const [showOtpModal, setShowOtpModal] = React.useState(false); // Show OTP modal only for unverified users
-  const [isOtpVerified, setIsOtpVerified] = React.useState(false); // OTP verification status
-  const [email, setEmail] = React.useState(""); // Email state for OTP submission
-  const [isVerified, setIsVerified] = React.useState(false); // User verification status
+  const [showOtpModal, setShowOtpModal] = React.useState(false);
+  const [isOtpVerified, setIsOtpVerified] = React.useState(false);
+  const [email, setEmail] = React.useState("");
+  const [isVerified, setIsVerified] = React.useState(false);
   const router = useRouter();
+  const { isLoading, setIsLoading } = useLoadingState();
 
+  // OTP schema and form
   const otpSchema = z.object({
-    otp: z.string().length(6, { message: "Invalid OTP" }), // OTP must be 6 characters long
+    otp: z.string().length(6, { message: "Invalid OTP" }),
   });
 
   type OtpFormData = z.infer<typeof otpSchema>;
@@ -51,45 +55,44 @@ const Page = () => {
     },
   });
 
-  // Handle OTP verification
+  // Handle OTP submission
   const onOtpSubmit = async (data: { otp: string }) => {
+    setIsLoading(true);
     try {
       const response = await fetch("/api/user/verify-otp", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp: data.otp }),
       });
 
       const result = await response.json();
 
       if (result.success) {
-        setIsOtpVerified(true); // Mark OTP as verified
-        setShowOtpModal(false); // Close the dialog
-        // Now attempt to log the user in
+        setIsOtpVerified(true);
+        setShowOtpModal(false);
         const signInResult = await signIn("credentials", {
           redirect: false,
           email,
-          password: form.getValues().password, // Assuming password is available in form state
+          password: form.getValues().password,
         });
 
         if (signInResult?.error) {
           form.setError("email", { type: "manual", message: signInResult.error });
-          return;
+        } else {
+          router.push("/admin");
+          form.reset();
         }
-
-        router.push("/admin"); 
-        form.reset();
       } else {
         otpForm.setError("otp", { type: "manual", message: result.message });
       }
     } catch (error) {
       console.error("OTP verification error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // User login schema
+  // User schema and form
   const userSchema = z.object({
     email: z.string().email({ message: "Invalid email address" }),
     password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
@@ -99,22 +102,17 @@ const Page = () => {
 
   const form = useForm<FormData>({
     resolver: zodResolver(userSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
   });
 
-  // Handle user login and verification
+  // Handle login
   const onSubmit = async (data: { email: string; password: string }) => {
-    setEmail(data.email); // Set email for OTP submission
+    setEmail(data.email);
+    setIsLoading(true);
     try {
-      // Check if the user exists and their verification status
       const response = await fetch("/api/user/check-verification", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: data.email }),
       });
 
@@ -131,21 +129,30 @@ const Page = () => {
 
           if (signInResult?.error) {
             form.setError("email", { type: "manual", message: signInResult.error });
-            return;
+          } else {
+            router.push("/admin");
+            form.reset();
           }
-
-          router.push("/admin");
-          form.reset();
         } else {
-          setShowOtpModal(true); // Show OTP modal if user is unverified
+          setShowOtpModal(true);
         }
       } else {
         form.setError("email", { type: "manual", message: result.message });
       }
     } catch (error) {
       console.error("Error checking verification:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-8">
@@ -153,10 +160,8 @@ const Page = () => {
       <Dialog open={showOtpModal}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Verify your  email </DialogTitle>
-            <DialogDescription>
-            Enter the 6-digit code sent to your email.
-          </DialogDescription>
+            <DialogTitle>Verify your email</DialogTitle>
+            <DialogDescription>Enter the 6-digit code sent to your email.</DialogDescription>
           </DialogHeader>
           <Form {...otpForm}>
             <form onSubmit={otpForm.handleSubmit(onOtpSubmit)}>
@@ -186,7 +191,7 @@ const Page = () => {
         <div className="w-full max-w-sm p-4">
           <Card className="p-4">
             <CardHeader className="text-center">
-              <CardTitle className="text-xl">Welcome back!!</CardTitle>
+              <CardTitle className="text-xl">Welcome back!</CardTitle>
               <CardDescription>Log in to your account.</CardDescription>
             </CardHeader>
 
@@ -218,7 +223,7 @@ const Page = () => {
                     </FormItem>
                   )}
                 />
-                <Button className="w-full my-4" type="submit">
+                <Button className="w-full my-4 text-white" type="submit">
                   Submit
                 </Button>
                 <div className="mt-2 text-center text-sm">
@@ -237,6 +242,7 @@ const Page = () => {
 };
 
 export default Page;
+
 
 
 

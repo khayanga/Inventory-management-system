@@ -6,6 +6,7 @@ import ClientLayout from "./ClientLayout";
 import { ThemeProvider } from "@/components/theme-provider";
 
 
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -37,7 +38,7 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange>
-          <ClientLayout>
+          <ClientLayout>        
             {children}
             </ClientLayout>
 

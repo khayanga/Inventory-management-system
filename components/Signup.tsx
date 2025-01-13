@@ -32,11 +32,15 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import Link from "next/link";
+import { useLoadingState } from "./LoadingContext";
+import Spinner from "./Spinner";
 
 
 
 const Signup = () => {
   const router = useRouter();
+
+  const {isLoading, setIsLoading} = useLoadingState();
 
 
   // Define the schema for form validation
@@ -66,6 +70,7 @@ const Signup = () => {
   });
 
   const onSubmit = async (data: FormData) => {
+    setIsLoading(true);
     try {
       const response = await axios.post("/api/user", data);
       console.log(response.data, "User created successfully");
@@ -78,8 +83,22 @@ const Signup = () => {
           message: error.response.data.message,
         });
       }
+      
+
+      
+    }
+    finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner />
+      </div>
+    );
+  }
   return (
     <Card  className="p-4 ">
       <CardHeader className="text-center">
@@ -154,7 +173,7 @@ const Signup = () => {
               </FormItem>
             )}
           />
-          <Button className="w-full my-4" type="submit">Submit</Button>
+          <Button className="w-full my-4 text-white" type="submit">Submit</Button>
 
           <div className="mt-2 text-center text-sm">
               {/* Don&apos;t have an account?{" "} */}

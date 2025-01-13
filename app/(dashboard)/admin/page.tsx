@@ -1,16 +1,29 @@
 "use client";
 
+import { useLoadingState } from "@/components/LoadingContext";
 import { ModeToggle } from "@/components/ModeToggle";
+import Spinner from "@/components/Spinner";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 
 const Page = () => {
   const { data: session, status } = useSession();
+  const { isLoading, setIsLoading } = useLoadingState();
 
-  if (status === "loading") {
-    return <p>Loading...</p>;
+  useEffect(() => {
+    // Synchronize loading state with session status
+    setIsLoading(status === "loading");
+  }, [status, setIsLoading]);
+
+  if (isLoading || status === "loading") {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner />
+      </div>
+    );
   }
+  
 
   if (!session) {
     return <p>You are not logged in. Please sign in to access the dashboard.</p>;
