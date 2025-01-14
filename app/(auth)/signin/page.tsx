@@ -32,6 +32,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import Spinner from "@/components/Spinner";
+import { useToast } from "@/hooks/use-toast";
 
 const Page = () => {
   const [showOtpModal, setShowOtpModal] = React.useState(false);
@@ -40,6 +41,7 @@ const Page = () => {
   const [isVerified, setIsVerified] = React.useState(false);
   const router = useRouter();
   const { isLoading, setIsLoading } = useLoadingState();
+  const {toast} = useToast();
 
   // OTP schema and form
   const otpSchema = z.object({
@@ -70,6 +72,10 @@ const Page = () => {
       if (result.success) {
         setIsOtpVerified(true);
         setShowOtpModal(false);
+        toast({
+          title:'Verification',
+          description:'Email has been verified successfully',
+        })
         const signInResult = await signIn("credentials", {
           redirect: false,
           email,
@@ -87,6 +93,7 @@ const Page = () => {
       }
     } catch (error) {
       console.error("OTP verification error:", error);
+    
     } finally {
       setIsLoading(false);
     }

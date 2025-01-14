@@ -6,7 +6,6 @@ import ClientLayout from "./ClientLayout";
 import { ThemeProvider } from "@/components/theme-provider";
 
 
-
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -23,6 +22,8 @@ export const metadata: Metadata = {
   description: "Stock management automated",
 };
 
+
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,14 +38,12 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange>
-          <ClientLayout>        
-            {children}
-            </ClientLayout>
-
+          disableTransitionOnChange
+        >
+          
+            <ClientLayout>{children}</ClientLayout>
+          
         </ThemeProvider>
-        
-        
       </body>
     </html>
   );

@@ -34,11 +34,13 @@ import {
 import Link from "next/link";
 import { useLoadingState } from "./LoadingContext";
 import Spinner from "./Spinner";
+import { useToast } from "@/hooks/use-toast";
 
 
 
 const Signup = () => {
   const router = useRouter();
+  const {toast} = useToast();
 
   const {isLoading, setIsLoading} = useLoadingState();
 
@@ -74,6 +76,10 @@ const Signup = () => {
     try {
       const response = await axios.post("/api/user", data);
       console.log(response.data, "User created successfully");
+      toast({
+        title: "Account created",
+        description: "Your account has been created successfully",
+        })
       router.push("/signin"); // Redirect to sign-in page
       form.reset(); // Reset the form
     } catch (error: any) {

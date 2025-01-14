@@ -10,25 +10,50 @@ datasource db {
 enum Role {
   Admin
   Client
+  Employee
 }
 
+enum EquipmentStatus {
+  Available
+  InUse
+  Returned
+  UnderMaintenance
+}
+
+enum OrderStatus {
+  Pending
+  Approved
+  Shipped
+  Delivered
+  Cancelled
+}
+
+enum EmployeeRole {
+  WarehouseManager
+  EquipmentHandler
+  InventoryManager
+  AdminAssistant
+}
 
 model User {
   id            Int      @id @default(autoincrement())
   email         String   @unique
   username      String   @unique
   password      String
-  role          String   @default("Client")
+  role          Role     @default(Client)
   verified      Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   otp           String?
   otpExpiresAt  DateTime?
   otps          Otp[]
-
+  customers     Customer[]
+  orders        Order[]
+  billingDetails BillingDetails[] 
+  supplies      Supply[]
+  equipmentLogs EquipmentLog[] @relation("UserEquipmentLogs")
+  employees     Employee[]
 }
-
-
 model Otp {
   id        Int      @id @default(autoincrement())
   otp       String
@@ -36,5 +61,132 @@ model Otp {
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
 }
+
+model Customer {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  phone     String
+  address   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  orders    Order[]
+  employees Employee[]
+  equipmentLogs EquipmentLog[]
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  quantity    Int
+  price       Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  orders      Order[]  @relation("OrderProducts")
+  supplies    Supply[]
+}
+
+model Order {
+  id          Int          @id @default(autoincrement())
+  totalPrice  Float
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  user        User         @relation(fields: [userId], references: [id])
+  userId      Int
+  customer    Customer     @relation(fields: [customerId], references: [id])
+  customerId  Int
+  products    Product[]    @relation("OrderProducts")
+  status      OrderStatus  @default(Pending)
+}
+
+model BillingDetails {
+  id            Int      @id @default(autoincrement())
+  approverName  String
+  approverEmail String
+  approverPhone String
+  bankName      String
+  accountNumber String
+  bankPaybill   String
+  user          User     @relation(fields: [userId], references: [id])
+  userId        Int     
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Supplier {
+  id          Int      @id @default(autoincrement())
+  name        String
+  contactName String
+  contactEmail String
+  contactPhone String
+  address     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  supplies    Supply[]
+}
+
+model Supply {
+  id          Int      @id @default(autoincrement())
+  quantity    Int
+  price       Float
+  supplyDate  DateTime @default(now())
+  product     Product  @relation(fields: [productId], references: [id])
+  productId   Int
+  supplier    Supplier @relation(fields: [supplierId], references: [id])
+  supplierId  Int
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+}
+
+model Equipment {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String
+  condition   String       @default("Good")
+  status      EquipmentStatus @default(Available)
+  location    String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  equipmentLogs EquipmentLog[]
+  assignedTo  Employee?    @relation(fields: [assignedToId], references: [id])
+  assignedToId Int?
+}
+
+model EquipmentLog {
+  id          Int        @id @default(autoincrement())
+  logType     String     // 'Taken' or 'Returned'
+  timestamp   DateTime   @default(now())
+  condition   String     // Condition of the equipment when taken or returned
+  client      Customer   @relation(fields: [clientId], references: [id]) 
+  clientId    Int
+  employee    Employee   @relation(fields: [employeeId], references: [id])  
+  employeeId  Int
+  equipment   Equipment  @relation(fields: [equipmentId], references: [id]) 
+  equipmentId Int
+  user        User       @relation("UserEquipmentLogs", fields: [userId], references: [id])
+  userId      Int
+}
+
+model Employee {
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String   @unique
+  phone       String
+  role        EmployeeRole
+  clientId    Int
+  client      Customer @relation(fields: [clientId], references: [id])
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  equipment   Equipment[]
+  equipmentLogs EquipmentLog[]
+}
+
+
+
 
 
