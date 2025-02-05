@@ -39,6 +39,8 @@ const Page = () => {
         <button className="text-center bg-violet-300 text-white">Sign out</button>
       </Link>
       <ModeToggle />
+
+      
     </div>
   );
 };
