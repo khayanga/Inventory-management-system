@@ -1,5 +1,5 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { NextAuthOptions, DefaultSession } from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "./db";
 import { compare } from "bcrypt";
@@ -11,8 +11,7 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   pages: {
-    signIn: "/signin", 
-    signOut: "/signout",
+    signIn: "/signin",
   },
   providers: [
     CredentialsProvider({
@@ -22,7 +21,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials || !credentials.email || !credentials.password) {
+        if (!credentials?.email || !credentials?.password) {
           throw new Error("Please enter your email and password.");
         }
 
@@ -40,26 +39,24 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid password.");
         }
 
-        
-
         return {
           id: `${existingUser.id}`,
           email: existingUser.email,
           username: existingUser.username,
           role: existingUser.role,
-          
         };
       },
     }),
   ],
 
-  // callbacks
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         return { 
           ...token,
+          id: user.id,
           username: user.username, 
+          role: user.role, 
         };
       }
       return token;
@@ -69,12 +66,12 @@ export const authOptions: NextAuthOptions = {
         ...session,
         user: {
           ...session.user,
+          id: token.id,
           username: token.username,
+          role: token.role, 
         },
       };
     },
-  },  
-
-
- 
+  },
 };
+
