@@ -1,13 +1,14 @@
-import { FormState, SignupFormSchema } from "@/lib/definition"
-import { db } from "@/lib/db"
-import { hash } from "bcrypt";
-import { createSession } from "@/lib/session";
+"use server"
+import { FormState, SignupFormSchema } from "@/app/lib/definition"
+import { db } from "@/app/lib/db"
+import { hash } from "bcryptjs";
+import { createSession, deleteSession } from "@/app/lib/server/session";
 import { redirect } from "next/navigation";
 
 export async function signup(state: FormState, formData: FormData) {
   // Validate form fields
   const validatedFields = SignupFormSchema.safeParse({
-    username: formData.get('name'),
+    username: formData.get('username'),
     email: formData.get('email'),
     password: formData.get('password'),
   })
@@ -29,9 +30,6 @@ export async function signup(state: FormState, formData: FormData) {
       username,
       email,
       password: hashedPassword,
-      verified: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
     },
     select: {
       id: true,
@@ -48,7 +46,12 @@ export async function signup(state: FormState, formData: FormData) {
 
   await createSession(user.id.toString())
   // 5. Redirect user
-  redirect('/admin')
+  redirect('/signin')
+}
+
+export async function logout() {
+  deleteSession()
+  redirect('/signin')
 }
 
 export async function signin(formData:FormData){}

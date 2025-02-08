@@ -1,240 +1,64 @@
-// "use client";
 
-// import React from "react";
-// import { z } from "zod";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import axios from "axios";
-// import { useForm, FieldError } from "react-hook-form";
-// import { useRouter } from "next/navigation";
-// import { Button } from "@/components/ui/button"
-// import {
-//   Form,
-//   FormControl,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-//   FormMessage,
-// } from "@/components/ui/form"
-// import { Input } from "@/components/ui/input"
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select"
+"use client";
+import { signup } from "@/app/actions/auth";
+import { useActionState } from "react";
+import { Button } from "./ui/button";
+import { Label } from "./ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
-// import {
-//   Card,
- 
-//   CardDescription,
-//   CardHeader,
-//   CardTitle,
-// } from "@/components/ui/card"
-// import Link from "next/link";
-// import { useLoadingState } from "./LoadingContext";
-// import Spinner from "./Spinner";
-// import { useToast } from "@/hooks/use-toast";
-
-
-
-// const Signup = () => {
-//   const router = useRouter();
-//   const {toast} = useToast();
-
-//   const {isLoading, setIsLoading} = useLoadingState();
-
-
-//   // Define the schema for form validation
-//   const userSchema = z.object({
-//     email: z.string().email("Invalid email address"),
-//     username: z.string().min(3, "Username must be at least 3 characters"),
-//     password: z.string().min(6, "Password must be at least 6 characters"),
-//     role: z
-//       .string()
-//       .optional()
-//       .refine((role) => role === undefined || ["Admin", "Client"].includes(role), {
-//         message: "Invalid role",
-//       }),
-//   });
-
-//   // Define the form data type
-//   type FormData = z.infer<typeof userSchema>;
-
-//   const form = useForm<FormData>({
-//     resolver: zodResolver(userSchema),
-//     defaultValues: {
-//       email: "",
-//       username: "",
-//       password: "",
-//       role: "Client",
-//     },
-//   });
-
-//   const onSubmit = async (data: FormData) => {
-//     setIsLoading(true);
-//     try {
-//       const response = await axios.post("/api/user", data);
-//       console.log(response.data, "User created successfully");
-//       toast({
-//         title: "Account created",
-//         description: "Your account has been created successfully",
-//         })
-//       router.push("/signin"); // Redirect to sign-in page
-//       form.reset(); // Reset the form
-//     } catch (error: any) {
-//       if (error.response?.data?.field) {
-//         form.setError(error.response.data.field as keyof FormData, {
-//           type: "server",
-//           message: error.response.data.message,
-//         });
-//       }
-      
-
-      
-//     }
-//     finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-//   if (isLoading) {
-//     return (
-//       <div className="flex justify-center items-center h-screen">
-//         <Spinner />
-//       </div>
-//     );
-//   }
-//   return (
-//     <Card  className="p-4 ">
-//       <CardHeader className="text-center">
-//           <CardTitle className="text-xl">Get started.</CardTitle>
-//           <CardDescription>
-//             Sign up to create your account.
-//           </CardDescription>
-//       </CardHeader>
-//       <Form {...form}>
-//         <form
-//           onSubmit={form.handleSubmit(onSubmit)}
-          
-//         >
-//           <FormField
-//             control={form.control}
-//             name="email"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel>Email</FormLabel>
-//                 <FormControl>
-//                   <Input placeholder="Email" {...field} />
-//                 </FormControl>
-//                 <FormMessage />
-//               </FormItem>
-//             )}
-//           />
-//           <FormField
-//             control={form.control}
-//             name="username"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel>Username</FormLabel>
-//                 <FormControl>
-//                   <Input placeholder="Username" {...field} />
-//                 </FormControl>
-//                 <FormMessage />
-//               </FormItem>
-//             )}
-//           />
-//           <FormField
-//             control={form.control}
-//             name="password"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel>Password</FormLabel>
-//                 <FormControl>
-//                   <Input type="password" placeholder="Password" {...field} />
-//                 </FormControl>
-//                 <FormMessage />
-//               </FormItem>
-//             )}
-//           />
-//           <FormField
-//             control={form.control}
-//             name="role"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel>Role</FormLabel>
-//                 <FormControl>
-//                   <Select onValueChange={field.onChange} defaultValue={field.value}{...field}>
-//                     <SelectTrigger>
-//                       <SelectValue placeholder="Select a role " />
-//                     </SelectTrigger>
-//                     <SelectContent>
-//                       <SelectItem value="Admin">Admin</SelectItem>
-//                       <SelectItem value="Client">Client</SelectItem>
-//                     </SelectContent>
-//                   </Select>
-                 
-//                 </FormControl>
-//                 <FormMessage />
-//               </FormItem>
-//             )}
-//           />
-//           <Button className="w-full my-4 text-white" type="submit">Submit</Button>
-
-//           <div className="mt-2 text-center text-sm">
-//               {/* Don&apos;t have an account?{" "} */}
-//               Alreday have an account ? 
-//               <Link href="/signin" className="underline underline-offset-4 text-blue-500">
-//                 Sign In
-//               </Link>
-//             </div>
-//         </form>
-//       </Form>
-
-//     </Card>
-//   )
-// };
-
-// export default Signup;
-
-
-import { signup } from '@/app/actions/auth'
-import { useActionState } from 'react'
- 
 export function Signup() {
-  const [state, action, pending] = useActionState(signup, undefined)
+  // Ensure default state structure
+  const [state, action, pending] = useActionState(signup, { errors: {} });
+
   return (
-    <form action={action}>
-      <div>
-        <label htmlFor="username">Userame</label>
-        <input id="username" name="username" placeholder="Name" />
-      </div>
-      {state?.errors?.username && <p>{state.errors.username}</p>}
-      <div>
-        <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" placeholder="Email" />
-      </div>
-      {state?.errors?.email && <p>{state.errors.email}</p>}
-      <div>
-        <label htmlFor="password">Password</label>
-        <input id="password" name="password" type="password" />
-      </div>
-      {state?.errors?.password && (
-        <div>
-          <p>Password must:</p>
-          <ul>
-            {state.errors.password.map((error) => (
-              <li key={error}>- {error}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-      <button disabled={pending} type="submit">
-        Sign Up
-      </button>
-    </form>
-  )
+    <Card>
+      <CardHeader className="text-center">
+        <CardTitle className="text-xl">Get started.</CardTitle>
+        <CardDescription>Sign up to create your account.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form action={action}>
+          <div className="flex flex-col gap-6">
+            <div className="grid gap-2">
+              <Label htmlFor="username">Username</Label>
+              <Input id="username" name="username" type="text" placeholder="name" defaultValue="" />
+              {state?.errors?.username && <p>{state.errors.username}</p>}
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" name="email" type="email" placeholder="m@example.com" defaultValue="" />
+              {state?.errors?.email && <p>{state.errors.email}</p>}
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" name="password" type="password" placeholder="123" defaultValue="" />
+              {state?.errors?.password && <p>{state.errors.password}</p>}
+            </div>
+          </div>
+
+          <Button className="w-full my-4 text-white" disabled={pending} type="submit">
+            Sign Up
+          </Button>
+
+          <div className="mt-4 text-center text-sm">
+            Already have an account?{" "}
+            <a href="#" className="underline underline-offset-4">
+              Sign in
+            </a>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
 }
+
 
 
 

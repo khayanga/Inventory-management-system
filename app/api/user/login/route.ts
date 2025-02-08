@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db } from "@/app/lib/db";
 import { NextResponse } from "next/server";
 import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";

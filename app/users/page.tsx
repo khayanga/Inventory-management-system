@@ -1,6 +1,6 @@
 import Users from "@/components/Users";
-import { authOptions } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { authOptions } from "@/app/lib/auth";
+import { db } from "@/app/lib/db";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 

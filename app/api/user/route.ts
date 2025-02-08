@@ -1,9 +1,9 @@
-import { db } from "@/lib/db";
+import { db } from "@/app/lib/db";
 import { NextResponse } from "next/server";
 import { hash } from "bcrypt";
 import * as z from "zod";
-import { generateOtp } from "@/lib/otp";
-import { sendOtp } from "@/lib/nodemailer";
+import { generateOtp } from "@/app/lib/otp";
+import { sendOtp } from "@/app/lib/nodemailer";
 
 // Define schema for form validation using zod
 const userSchema = z.object({
