@@ -2,7 +2,7 @@
 import { FormState, SignupFormSchema } from "@/app/lib/definition"
 import { db } from "@/app/lib/db"
 import { hash } from "bcryptjs";
-import { createSession, deleteSession } from "@/app/lib/server/session";
+
 import { redirect } from "next/navigation";
 import { generateOtp } from "../lib/otp";
 import { sendOtp } from "../lib/nodemailer";
@@ -71,8 +71,8 @@ export async function signup(state: FormState, formData: FormData) {
 }
 
 
-export async function logout() {
-  deleteSession()
-  redirect('/signin')
-}
+// export async function logout() {
+//   deleteSession()
+//   redirect('/signin')
+// }
 

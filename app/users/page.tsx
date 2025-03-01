@@ -1,16 +1,9 @@
 import Users from "@/components/Users";
-import { authOptions } from "@/app/lib/auth";
 import { db } from "@/app/lib/db";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+
 
 const page = async () => {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-      redirect("/signin");
-  }
-
+ 
     // Fetch users
     const users = (await db.user.findMany()).map(user => ({
         id: user.id.toString(),
