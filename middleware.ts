@@ -15,16 +15,7 @@ export default async function middleware(req: NextRequest) {
     const userRole = session?.role;
 
      console.log({session})
-    if (session) {
-        console.log("Session exists")
-    } else {
-        console.log("Session does not exist")
-
-
-    }
-
     
-
     if (isProtectedRoute && !session) {
             return NextResponse.redirect(new URL("/signin", req.url));
           }
@@ -33,6 +24,7 @@ export default async function middleware(req: NextRequest) {
             const redirectPath = userRole === "Client" ? "/client" : "/admin";
             
             return NextResponse.redirect(new URL(redirectPath, req.url));
+        
         }
     
 

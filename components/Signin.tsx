@@ -47,7 +47,7 @@ const Signin = ({ onOtpRequired }: { onOtpRequired: (email: string) => void }) =
       if (result.success) {
         if (result.data.verified) {
           const signInResult = await signIn("credentials", {
-            redirect: false,
+            redirect: true,
             email: data.email,
             password: data.password,
           });
@@ -55,7 +55,7 @@ const Signin = ({ onOtpRequired }: { onOtpRequired: (email: string) => void }) =
           if (signInResult?.error) {
             form.setError("email", { type: "manual", message: signInResult.error });
           } else {
-            router.push("/admin");
+           
             form.reset();
           }
         } else {
