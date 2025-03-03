@@ -6,7 +6,7 @@ const protectedRoutes = ["/users", "/admin", "/client"];
 const publicRoutes = ["/signin", "/signup", "/"];
 
 export default async function middleware(req: NextRequest) {
-    console.log("Middlware is running")
+    // console.log("Middlware is running")
 
     const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     const path = req.nextUrl.pathname;
@@ -14,7 +14,7 @@ export default async function middleware(req: NextRequest) {
     const isPublicRoute = publicRoutes.includes(path);
     const userRole = session?.role;
 
-     console.log({session})
+    //  console.log({session})
     
     if (isProtectedRoute && !session) {
             return NextResponse.redirect(new URL("/signin", req.url));

@@ -83,17 +83,31 @@ model Customer {
   @@index([createdAt])
 }
 
+
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique @db.VarChar(150)
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+}
+
 model Product {
-  id          String   @id @default(uuid())
-  name        String   @db.VarChar(150)
+  id          String    @id @default(uuid())
+  name        String    @db.VarChar(150)
   description String
   quantity    Int
   price       Float
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  orders      Order[]  @relation("OrderProducts")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  orders      Order[]   @relation("OrderProducts")
   supplies    Supply[]
+  category    Category?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId  String?
 }
+
 
 model Order {
   id          String      @id @default(uuid())

@@ -10,6 +10,10 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
+    maxAge: 60 * 30,
+  },
+  jwt: {
+    maxAge: 60 * 30,
   },
   pages: {
     signIn: "/signin",
@@ -58,6 +62,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           username: user.username, 
           role: user.role, 
+          exp: Math.floor(Date.now() / 1000) + 60 * 30,
         };
       }
       return token;
@@ -71,6 +76,8 @@ export const authOptions: NextAuthOptions = {
           username: token.username,
           role: token.role, 
         },
+
+        expires: new Date((token as any).exp * 1000).toISOString(),
       };
     },
   },

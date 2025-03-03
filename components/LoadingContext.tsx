@@ -1,19 +1,17 @@
-import React, { createContext, useContext, useState, Dispatch, SetStateAction } from 'react';
+import React, { createContext, useContext, useState, Dispatch, SetStateAction } from "react";
 
-interface LoadingStateContext {
+interface LoadingStateContextProps {
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
-const LoadingStateContext = createContext<LoadingStateContext>({
-  isLoading: false,
-  setIsLoading: () => {},
-});
+
+const LoadingStateContext = createContext<LoadingStateContextProps | undefined>(undefined);
 
 export const useLoadingState = () => {
   const context = useContext(LoadingStateContext);
   if (!context) {
-    throw new Error('useLoadingState must be used within a LoadingStateProvider');
+    throw new Error("useLoadingState must be used within a LoadingStateProvider");
   }
   return context;
 };
