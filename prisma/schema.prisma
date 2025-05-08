@@ -7,211 +7,132 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  Admin
-  Client
-  Employee
+enum MilitaryRank {
+  Private
+  Corporal
+  Sergeant
+  Lieutenant
+  Captain
+  Major
+  Colonel
+  General
 }
 
-enum EquipmentStatus {
-  Available
-  InUse
-  Returned
-  UnderMaintenance
+enum UserRole {
+  ADMIN
+  DUTY_OFFICER
 }
 
-enum OrderStatus {
-  Pending
-  Approved
-  Shipped
-  Delivered
-  Cancelled
+enum WeaponStatus {
+  AVAILABLE
+  CHECKED_OUT
+  MAINTENANCE
+  DECOMMISSIONED
 }
 
-enum EmployeeRole {
-  WarehouseManager
-  EquipmentHandler
-  InventoryManager
-  AdminAssistant
+enum CheckoutStatus {
+  ACTIVE
+  RETURNED
+  OVERDUE
+  LOST
+}
+
+enum WeaponCondition {
+  EXCELLENT
+  GOOD
+  FAIR
+  POOR
 }
 
 model User {
-  id            String   @id @default(uuid())
-  email         String   @unique @db.VarChar(255)
-  username      String   @unique @db.VarChar(100)
-  password      String   @db.VarChar(255)
-  role          Role     @default(Client)
-  verified      Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id            String       @id @default(uuid())
+  militaryId    String       @unique @db.VarChar(20)
+  email         String       @unique @db.VarChar(100)
+  username      String       @unique @db.VarChar(100)
+  rank          MilitaryRank
+  role          UserRole     @default(DUTY_OFFICER)
+  password      String
+  verified      Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   otp           String?
   otpExpiresAt  DateTime?
-
-  otps          Otp[]
-  customers     Customer[]
-  orders        Order[]
-  billingDetails BillingDetails[] 
-  supplies      Supply[]
-  equipmentLogs EquipmentLog[]
-  employees     Employee[]
-
+  otps          Otp[]        @relation("UserOtps")
+  managedCheckouts Checkout[] @relation("DutyOfficerCheckouts")
+  auditLogs     AuditLog[]   @relation("UserAuditLogs")
+  
   @@index([createdAt])
+}
+
+model Officer {
+  id          String       @id @default(uuid())
+  militaryId  String       @unique @db.VarChar(20)
+  name        String       @db.VarChar(100)
+  rank        MilitaryRank
+  unit        String       @db.VarChar(100)
+  status      String       @default("ACTIVE") 
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  checkouts   Checkout[]
+  
+  @@index([militaryId])
+  @@index([status])
 }
 
 model Otp {
   id        String   @id @default(uuid())
   otp       String   @db.VarChar(10)
-  expiresAt DateTime
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-}
-
-model Customer {
-  id        String   @id @default(uuid())
-  name      String   @db.VarChar(150)
-  email     String   @unique @db.VarChar(255)
-  phone     String   @db.VarChar(20)
-  address   String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  user      User     @relation("UserOtps", fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  orders    Order[]
-  employees Employee[]
-  equipmentLogs EquipmentLog[]
-
-  @@index([createdAt])
 }
 
-
-
-model Category {
-  id          String    @id @default(uuid())
-  name        String    @unique @db.VarChar(150)
-  description String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  products    Product[]
+model Weapon {
+  id           String       @id @default(uuid())
+  serialNumber String       @unique
+  model        String       @db.VarChar(50)
+  type         String       @db.VarChar(30)
+  location     String?      @db.VarChar(100)
+  status       WeaponStatus @default(AVAILABLE)
+  checkouts    Checkout[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  condition    WeaponCondition @default(EXCELLENT)
+  dateAcquired DateTime? 
+  lastInspectionDate DateTime?
+  nextInspectionDate DateTime?
+  
+  @@index([serialNumber])
+  @@index([status])
 }
 
-model Product {
-  id          String    @id @default(uuid())
-  name        String    @db.VarChar(150)
-  description String
-  quantity    Int
-  price       Float
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  orders      Order[]   @relation("OrderProducts")
-  supplies    Supply[]
-  category    Category?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  categoryId  String?
+model Checkout {
+  id           String       @id @default(uuid())
+  weapon       Weapon       @relation(fields: [weaponId], references: [id])
+  weaponId     String
+  officer      Officer      @relation(fields: [officerId], references: [id])
+  officerId    String
+  dutyOfficer  User         @relation("DutyOfficerCheckouts", fields: [dutyOfficerId], references: [id])
+  dutyOfficerId String
+  checkoutTime DateTime     @default(now())
+  expectedReturnTime DateTime?
+  checkinTime  DateTime?
+  purpose      String
+  status       CheckoutStatus @default(ACTIVE)
+  conditionAtCheckout WeaponCondition
+  conditionAtCheckin WeaponCondition?
+  notes        String?
+  
+  @@index([checkoutTime])
+  @@index([status])
 }
 
-
-model Order {
-  id          String      @id @default(uuid())
-  totalPrice  Float
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-  customer    Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  customerId  String
-  products    Product[]   @relation("OrderProducts")
-  status      OrderStatus @default(Pending)
-
-  @@index([createdAt])
-}
-
-model BillingDetails {
-  id            String   @id @default(uuid())
-  approverName  String   @db.VarChar(150)
-  approverEmail String   @db.VarChar(255)
-  approverPhone String   @db.VarChar(20)
-  bankName      String
-  accountNumber String   @db.VarChar(50)
-  bankPaybill   String   @db.VarChar(50)
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        String     
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
-model Supplier {
-  id          String   @id @default(uuid())
-  name        String   @db.VarChar(150)
-  contactName String   @db.VarChar(150)
-  contactEmail String  @db.VarChar(255)
-  contactPhone String  @db.VarChar(20)
-  address     String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  supplies    Supply[]
-
-  @@index([createdAt])
-}
-
-model Supply {
-  id          String   @id @default(uuid())
-  quantity    Int
-  price       Float
-  supplyDate  DateTime @default(now())
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId   String
-  supplier    Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
-  supplierId  String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-}
-
-model Equipment {
-  id          String      @id @default(uuid())
-  name        String      @db.VarChar(150)
-  description String
-  condition   String      @default("Good") @db.VarChar(50)
-  status      EquipmentStatus @default(Available)
-  location    String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  equipmentLogs EquipmentLog[]
-  assignedTo  Employee?   @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
-  assignedToId String?
-
-  @@index([createdAt])
-}
-
-model EquipmentLog {
-  id          String   @id @default(uuid())
-  logType     String
-  timestamp   DateTime @default(now())
-  condition   String
-  client      Customer  @relation(fields: [clientId], references: [id], onDelete: Cascade) 
-  clientId    String
-  employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)  
-  employeeId  String
-  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade) 
-  equipmentId String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-
-  @@index([timestamp])
-}
-
-model Employee {
-  id          String   @id @default(uuid())
-  name        String   @db.VarChar(150)
-  email       String   @unique @db.VarChar(255)
-  phone       String   @db.VarChar(20)
-  role        EmployeeRole
-  clientId    String
-  client      Customer @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  equipment   Equipment[]
-  equipmentLogs EquipmentLog[]
-
-  @@index([createdAt])
+model AuditLog {
+  id        String   @id @default(uuid())
+  action    String
+  userId    String
+  user      User     @relation("UserAuditLogs", fields: [userId], references: [id])
+  metadata  Json?
+  createdAt DateTime @default(now())
 }

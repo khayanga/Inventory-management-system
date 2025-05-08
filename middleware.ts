@@ -3,7 +3,7 @@ import { getToken } from "next-auth/jwt";
 
 
 const protectedRoutes = ["/users", "/admin", "/client"];
-const publicRoutes = ["/signin", "/signup", "/"];
+const publicRoutes = [ "/signup", "/"];
 
 export default async function middleware(req: NextRequest) {
     // console.log("Middlware is running")
@@ -17,11 +17,11 @@ export default async function middleware(req: NextRequest) {
     //  console.log({session})
     
     if (isProtectedRoute && !session) {
-            return NextResponse.redirect(new URL("/signin", req.url));
+            return NextResponse.redirect(new URL("/", req.url));
           }
 
           if (isPublicRoute && session) {
-            const redirectPath = userRole === "Client" ? "/client" : "/admin";
+            const redirectPath = userRole === "DUTY_OFFICER" ? "/client" : "/admin";
             
             return NextResponse.redirect(new URL(redirectPath, req.url));
         

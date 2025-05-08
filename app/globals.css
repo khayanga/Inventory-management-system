@@ -5,74 +5,161 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.3rem;
-    --chart-1: 220 70% 50%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --background: 234 20% 11%;         /* Deep blue-black */
+    --foreground: 194 28% 95%;         /* Soft neon white-blue */
+    
+    --primary: 189 100% 47%;           /* Vibrant Neon Cyan */
+    --primary-foreground: 234 20% 11%; /* Dark text for contrast */
+    
+    --secondary: 243 15% 20%;          /* Desaturated dark blue */
+    --secondary-foreground: 194 28% 95%;
+    
+    --accent: 189 100% 47% / 0.6;      /* Semi-transparent Neon Cyan */
+    --accent-foreground: 234 20% 11%;
+    
+    --destructive: 0 97% 55%;          /* Bright red for errors */
+    --destructive-foreground: 194 28% 95%;
+    
+    --muted: 240 11% 18%;              /* Dark muted backgrounds */
+    --muted-foreground: 220 10% 70%;   /* Subdued text */
+    
+    --card: 237 28% 15%;               /* Slightly lighter than background */
+    --card-foreground: 194 28% 95%;
+    
+    --popover: 234 20% 15%;            /* Popover surfaces */
+    --popover-foreground: 194 28% 95%;
+    
+    --border: 228 16% 26%;             /* Border colors */
+    --input: 228 16% 26%;              /* Input fields */
+    --ring: 189 100% 47%;              /* Focus ring color */
+    
+    --radius: 1rem;                    /* Border radius */
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background:  222.2 84% 4.9%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+  /* LIGHT MODE - Cyan Primary Theme */
+  .light {
+    --background: 210 30% 98%;         /* Soft light background */
+    --foreground: 225 25% 20%;         /* Dark text for readability */
+    
+    --primary: 189 100% 47%;           /* Vibrant Cyan (same as dark mode) */
+    --primary-foreground: 0 0% 100%;   /* White text for better contrast */
+    
+    --secondary: 210 20% 93%;          /* Very light gray-blue */
+    --secondary-foreground: 225 25% 20%;
+    
+    --accent: 189 100% 47% / 0.4;      /* Slightly transparent cyan */
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 85% 50%;          /* Clear red */
+    --destructive-foreground: 0 0% 100%;
+    
+    --muted: 210 25% 90%;              /* Light muted backgrounds */
+    --muted-foreground: 225 15% 40%;   /* Subdued text */
+    
+    --card: 0 0% 100%;                 /* Pure white cards */
+    --card-foreground: 225 25% 20%;
+    
+    --popover: 210 30% 98%;            /* Popover surfaces */
+    --popover-foreground: 225 25% 20%;
+    
+    --border: 214 20% 85%;             /* Light borders */
+    --input: 214 20% 85%;              /* Input fields */
+    --ring: 189 100% 47%;              /* Cyan focus ring to match primary */
+    
+    --radius: 1rem;                    /* Consistent border radius */
+  }
+}
+@layer utilities {
+  .military-card {
+    @apply bg-card bg-opacity-60 backdrop-blur-md border border-border/40 shadow-md;
+    transition: background 0.2s;
+  }
+
+  .military-panel {
+    @apply bg-secondary/70 backdrop-blur bg-opacity-70 border border-border;
+  }
+
+  .tactical-status {
+    @apply flex items-center justify-center text-xs uppercase tracking-wider font-semibold rounded px-2 py-0.5;
+  }
+
+  .status-available {
+    @apply bg-primary/10 text-primary border border-primary/40;
+  }
+
+  .status-checked-out {
+    @apply bg-blue-900/20 text-blue-400 border border-blue-500/30;
+  }
+
+  .status-maintenance {
+    @apply bg-yellow-900/20 text-yellow-400 border border-yellow-500/30;
+  }
+
+  .status-overdue {
+    @apply bg-accent/10 text-accent border border-accent animate-status-blink;
+  }
+
+  .tactical-grid-bg {
+    @apply bg-tactical-grid bg-background;
+  }
+
+  .camo-pattern-bg {
+    @apply bg-gradient-to-br from-primary/10 to-background;
+  }
+
+  .scanner-effect {
+    @apply relative overflow-hidden;
+  }
+
+  .scanner-effect::after {
+    content: '';
+    @apply absolute left-0 top-0 w-full h-2 bg-accent/30 blur-sm animate-scanning;
+  }
+
+  .tactical-text-accent {
+    @apply text-primary font-medium;
+  }
+
+  .tactical-text-alert {
+    @apply text-accent font-medium;
+  }
+
+  .glassmorphism-military {
+    @apply backdrop-blur-xl bg-card/70 border border-primary/20 shadow-lg;
+  }
+
+  /* Responsive utilities */
+  .sidebar-content {
+    @apply transition-all duration-300;
+  }
+
+  /* Light mode specific utilities */
+  .light .military-card {
+    @apply bg-white bg-opacity-100 border-border/30 shadow-sm;
+  }
+
+  .light .tactical-status {
+    @apply bg-opacity-20 border-opacity-30;
+  }
+
+  .light .status-available {
+    @apply bg-green-100 text-green-700 border-green-200;
+  }
+
+  .light .status-checked-out {
+    @apply bg-blue-100 text-blue-700 border-blue-200;
+  }
+
+  .light .status-maintenance {
+    @apply bg-yellow-100 text-yellow-700 border-yellow-200;
+  }
+
+  .light .status-overdue {
+    @apply bg-red-100 text-red-700 border-red-200;
+  }
+
+  .light .scanner-effect::after {
+    @apply bg-primary/40;
   }
 }
 

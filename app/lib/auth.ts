@@ -16,26 +16,26 @@ export const authOptions: NextAuthOptions = {
     maxAge: 60 * 30,
   },
   pages: {
-    signIn: "/signin",
+    signIn: "/",
   },
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
+        militaryId: { label: "MilitaryId", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        if (!credentials?.militaryId|| !credentials?.password) {
           throw new Error("Please enter your email and password.");
         }
 
         const existingUser = await db.user.findUnique({
-          where: { email: credentials.email },
+          where: { militaryId: credentials.militaryId },
         });
 
         if (!existingUser) {
-          throw new Error("No user found with this email.");
+          throw new Error("No user found .");
         }
 
         const passwordMatch = await compare(credentials.password, existingUser.password);
@@ -49,6 +49,9 @@ export const authOptions: NextAuthOptions = {
           email: existingUser.email,
           username: existingUser.username,
           role: existingUser.role,
+          militaryId: existingUser.militaryId,
+          verified: existingUser.verified,
+          rank: existingUser.rank, 
         };
       },
     }),
@@ -62,6 +65,8 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           username: user.username, 
           role: user.role, 
+          militaryId: user.militaryId,  // Added
+          rank: user.rank,  
           exp: Math.floor(Date.now() / 1000) + 60 * 30,
         };
       }
@@ -75,6 +80,8 @@ export const authOptions: NextAuthOptions = {
           id: token.id,
           username: token.username,
           role: token.role, 
+          militaryId: token.militaryId, // Added
+          rank: token.rank,
         },
 
         expires: new Date((token as any).exp * 1000).toISOString(),
