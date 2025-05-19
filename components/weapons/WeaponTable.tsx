@@ -5,14 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import React from 'react'
 
 interface WeaponTableProps {
-    weapons: (Weapon & {
-      checkouts: {
-        officer: { militaryId: string; username: string };
-      }[];
-    })[];
-  }
+  weapons: (Weapon & {
+    checkouts: {
+      officer: { militaryId: string; name: string };
+    }[];
+  })[];
+  onAssignClick: (weaponId: string) => void;
+}
 
-const WeaponTable = ({weapons}:WeaponTableProps) => {
+const WeaponTable = ({weapons, onAssignClick}:WeaponTableProps) => {
     const getStatusIcon = (status: WeaponStatus) => {
         switch (status) {
           case "AVAILABLE": return <Check className="h-4 w-4 text-green-500" />;
@@ -57,18 +58,26 @@ const WeaponTable = ({weapons}:WeaponTableProps) => {
               </Badge>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm">
-              {weapon.checkouts[0]?.officer.username || "N/A"}
+              {weapon.checkouts[0]?.officer.name || "N/A"}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm">
             {weapon.dateAcquired
                 ? new Date(weapon.dateAcquired).toLocaleDateString()
                 : "N/A"}
             </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm">
-              <Button variant="ghost" size="sm">
-                Details
-              </Button>
-            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                        {/* Add action buttons here */}
+                        <button className="text-blue-500 hover:text-blue-700">Edit</button>
+                        <button 
+                        className="text-blue-500 hover:text-blue-700"
+                        onClick={() => onAssignClick(weapon.id)}
+                        disabled={weapon.status !== "AVAILABLE"}
+                      >
+                        Assign
+                      </button>
+                        <button className="text-red-500 hover:text-red-700 ml-4">Delete</button>
+                        
+                    </td>
           </tr>
         ))}
       </tbody>

@@ -36,7 +36,7 @@ const OfficerTable = ({officers}:OfficerTableProps) => {
                             <div key={checkout.weapon.serialNumber}>{checkout.weapon.serialNumber}</div>
                         ))}
                     </td> */}
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm space-x-4">
                         {/* Add action buttons here */}
                         <button className="text-blue-500 hover:text-blue-700">Edit</button>
                         <button className="text-blue-500 hover:text-blue-700">Assign</button>

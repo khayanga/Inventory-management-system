@@ -46,7 +46,7 @@ const Signin = ({ onOtpRequired }: { onOtpRequired: (militaryId: string) => void
 
       if (signInResult?.error) {
         // 2. If error, check if it's because user needs OTP
-        const verificationResponse = await fetch("/api/user/check-verification", {
+        const verificationResponse = await fetch("/api/users/check-verification", {
           method: "POST",
           headers: { 
             "Content-Type": "application/json",

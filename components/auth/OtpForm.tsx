@@ -33,7 +33,7 @@ export function OtpForm({ militaryId, email, open, onClose, onVerified }: OtpFor
   const onSubmit = async (values: z.infer<typeof otpSchema>) => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/user/verify-otp", {
+      const response = await fetch("/api/users/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
