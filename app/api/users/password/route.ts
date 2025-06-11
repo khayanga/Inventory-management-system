@@ -1,3 +1,3 @@
-import { db } from "@/app/lib/db";
+import { db } from "@/lib/db";
 
 export async function PATCH()

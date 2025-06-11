@@ -1,9 +1,9 @@
 "use server";
-import { FormState, SignupFormSchema } from "@/app/lib/definition";
-import { db } from "@/app/lib/db";
+import { FormState, SignupFormSchema } from "@/lib/definition";
+import { db } from "@/lib/db";
 import { hash } from "bcryptjs";
-import { generateOtp } from "../lib/otp";
-import { sendOtp } from "../lib/nodemailer";
+import { generateOtp } from "../../lib/otp";
+import { sendOtp } from "../../lib/nodemailer";
 import { MilitaryRank, Role } from "@prisma/client";
 
 export async function signup(state: FormState, formData: FormData): Promise<FormState> {

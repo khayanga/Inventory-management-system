@@ -1,9 +1,10 @@
-import { db } from "@/app/lib/db";
-import { getCurrentUser } from "@/app/lib/getCurrentUser";
+import { db } from "@/lib/db";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
-export async function PATCH(req:Request, {params}:{params:{id:string}}){
+export async function PATCH(req:Request, props:{params: Promise<{id:string}>}) {
+    const params = await props.params;
     const user = await getCurrentUser(req)
 
     if(!user){
@@ -12,9 +13,10 @@ export async function PATCH(req:Request, {params}:{params:{id:string}}){
             {status:401}
         )
     }
+     
 
     try{
-       const {id} =  params
+      const {id} =   params
         const body = await req.json()
          const{oldPassword, newPassword} = body
 

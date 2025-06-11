@@ -1,8 +1,9 @@
-import { db } from "@/app/lib/db";
-import { getCurrentUser } from "@/app/lib/getCurrentUser";
+import { db } from "@/lib/db";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     const user = await getCurrentUser(req)
 
     if(!user){
@@ -49,7 +50,8 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 }
 
 // update user
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     const user = await getCurrentUser(req)
 
     if(!user){
@@ -107,7 +109,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 }
 
 // Delete user
-export async function DELETE(req:Request, {params}:{params:{id:string}}){
+export async function DELETE(req:Request, props:{params: Promise<{id:string}>}) {
+    const params = await props.params;
     const user = await getCurrentUser(req)
 
     if(!user || user.role !== "admin"){
@@ -146,6 +149,5 @@ export async function DELETE(req:Request, {params}:{params:{id:string}}){
         )
         
     }
-    
 }
   

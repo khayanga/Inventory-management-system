@@ -1,5 +1,5 @@
-import { db } from "@/app/lib/db";
-import { getCurrentUser } from "@/app/lib/getCurrentUser";
+import { db } from "@/lib/db";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -29,7 +29,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
     const user = await getCurrentUser(req);
-    if(!user || user.role !=='DUTY_OFFICER' ){
+    if(!user ){
         return NextResponse.json(
             {error:"Unauthorized"},
             { status: 401 }

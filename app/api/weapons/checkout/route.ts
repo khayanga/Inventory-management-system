@@ -1,5 +1,5 @@
-import { db } from "@/app/lib/db";
-import { getCurrentUser } from "@/app/lib/getCurrentUser";
+import { db } from "@/lib/db";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { weaponId, militaryId, purpose, expectedReturnDate } = await req.json();
+    const { weaponId, militaryId, purpose } = await req.json();
 
     if (!weaponId || !militaryId || !purpose) {
       return NextResponse.json(
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
           status: "ACTIVE",
           checkoutTime: new Date(),
           conditionAtCheckout: weapon.condition,
-          expectedReturnTime: expectedReturnDate ? new Date(expectedReturnDate) : null,
+         
         },
         include: {
           weapon: { select: { serialNumber: true, model: true } },

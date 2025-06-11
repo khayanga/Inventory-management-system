@@ -1,5 +1,5 @@
 import Users from "@/components/Users";
-import { db } from "@/app/lib/db";
+import { db } from "@/lib/db";
 
 
 const page = async () => {

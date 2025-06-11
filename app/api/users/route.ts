@@ -1,6 +1,6 @@
 
-import { db } from "@/app/lib/db";
-import { getCurrentUser } from "@/app/lib/getCurrentUser";
+import { db } from "@/lib/db";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
